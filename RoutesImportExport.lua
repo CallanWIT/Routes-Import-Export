@@ -56,6 +56,8 @@ local function importRoute(value)
 
 		    Routes:DrawWorldmapLines()
 		    Routes:DrawMinimapLines(true)
+
+            return data
         end
     end
 end
@@ -83,7 +85,12 @@ local importGroup = {
     width = "full",
     multiline = true,
     set = function(info, value)
-        importRoute(value)
+        local result, route = pcall(importRoute, value)
+        if result and route then
+            print("Route " .. route.RouteName .. " (" .. C_Map.GetMapInfo(route.RouteZone).name .. ") imported succefully" )
+        else
+            print("|cFFFF0808Incorrect import string")
+        end
     end,
 	order = 999,
 }
