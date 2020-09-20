@@ -21,33 +21,48 @@ local route_zone_args_desc_table = {
 
 local function importRoute(value)
     if strlen(value) > 0 then
-        local result, data = AceSerializer:Deserialize(LibBase64.Decode(value))
+        local routes = { strsplit(";", value) }
+        local updated = false
 
-        if result and data and data.RouteZone and data.RouteKey and data.RouteName and data.RouteData then
-		    Routes.db.global.routes[data.RouteZone][data.RouteName] = nil
-		    Routes.db.global.routes[data.RouteZone][data.RouteName] = data.RouteData
+        for _, route in pairs(routes) do
+            route = strtrim(route)
 
-		    local opts = Routes.options.args.routes_group.args
-            local zoneKey = tostring(data.RouteZone)
+            if strlen(route) > 0 then
+                local result, data = AceSerializer:Deserialize(LibBase64.Decode(route))
 
-		    if not opts[zoneKey] then
-                local mapName = C_Map.GetMapInfo(data.RouteZone).name
+                if result and data and data.RouteZone and data.RouteKey and data.RouteName and data.RouteData then
+		            Routes.db.global.routes[data.RouteZone][data.RouteName] = nil
+		            Routes.db.global.routes[data.RouteZone][data.RouteName] = data.RouteData
 
-			    opts[zoneKey] = {
-				    type = "group",
-				    name = mapName,
-				    desc = L["Routes in %s"]:format(mapName),
-				    args = {
-					    desc = route_zone_args_desc_table,
-				    },
-			    }
+		            local opts = Routes.options.args.routes_group.args
+                    local zoneKey = tostring(data.RouteZone)
 
-			    Routes.routekeys[data.RouteZone] = {}
-		    end
+		            if not opts[zoneKey] then
+                        local mapName = C_Map.GetMapInfo(data.RouteZone).name
 
-		    Routes.routekeys[data.RouteZone][data.RouteKey] = data.RouteName
-		    opts[zoneKey].args[data.RouteKey] = Routes:GetAceOptRouteTable()
+			            opts[zoneKey] = {
+				            type = "group",
+				            name = mapName,
+				            desc = L["Routes in %s"]:format(mapName),
+				            args = {
+					            desc = route_zone_args_desc_table,
+				            },
+			            }
 
+			            Routes.routekeys[data.RouteZone] = {}
+		            end
+
+		            Routes.routekeys[data.RouteZone][data.RouteKey] = data.RouteName
+		            opts[zoneKey].args[data.RouteKey] = Routes:GetAceOptRouteTable()
+
+                    updated = true
+
+                    print("Route " .. data.RouteName .. " (" .. C_Map.GetMapInfo(data.RouteZone).name .. ") imported succefully" )
+                end
+            end
+        end
+
+        if updated then
 		    local AutoShow = Routes:GetModule("AutoShow", true)
 
 		    if AutoShow and Routes.db.defaults.use_auto_showhide then
@@ -56,9 +71,9 @@ local function importRoute(value)
 
 		    Routes:DrawWorldmapLines()
 		    Routes:DrawMinimapLines(true)
-
-            return data
         end
+
+        return updated
     end
 end
 
@@ -85,10 +100,8 @@ local importGroup = {
     width = "full",
     multiline = true,
     set = function(info, value)
-        local result, route = pcall(importRoute, value)
-        if result and route then
-            print("Route " .. route.RouteName .. " (" .. C_Map.GetMapInfo(route.RouteZone).name .. ") imported succefully" )
-        else
+        local result, imported = pcall(importRoute, value)
+        if not (result and imported) then
             print("|cFFFF0808Incorrect import string")
         end
     end,
