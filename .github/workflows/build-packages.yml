@@ -1,0 +1,76 @@
+name: build
+on: [push]
+jobs:
+  release:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Set version
+        id: version
+        run: echo "::set-output name=version::$(cat env/VERSION)"
+      - name: Set interface numbers
+        id: interface
+        run: |
+          echo "::set-output name=retail::$(cat env/interface_retail)"
+          echo "::set-output name=bcc::$(cat env/interface_bcc)"
+          echo "::set-output name=classic::$(cat env/interface_classic)"
+      - name: Update version
+        run: sed -i 's/1.0.5/${{ steps.version.outputs.version }}/g' RoutesImportExport.toc
+      - name: Archive Release Retail
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: Routes-Import-Export_v${{ steps.version.outputs.version }}.zip
+          exclusions: '*.git* env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
+      - name: Set interface number TBC
+        run: sed -i 's/${{ steps.interface.outputs.retail }}/${{ steps.interface.outputs.bcc }}/g' RoutesImportExport.toc
+      - name: Archive Release TBC
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: Routes-Import-Export_BCC_v${{ steps.version.outputs.version }}.zip
+          exclusions: '*.git* env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
+      - name: Set interface number Classic
+        run: sed -i 's/${{ steps.interface.outputs.bcc }}/${{ steps.interface.outputs.classic }}/g' RoutesImportExport.toc
+      - name: Archive Release Classic
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: Routes-Import-Export_classic_v${{ steps.version.outputs.version }}.zip
+          exclusions: '*.git* env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: v${{ steps.version.outputs.version }}
+          tag_name: v${{ steps.version.outputs.version }}
+          body_path: README.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: upload retail artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Routes-Import-Export_v${{ steps.version.outputs.version }}.zip
+          asset_name: Routes-Import-Export_v${{ steps.version.outputs.version }}.zip
+          asset_content_type: application/zip
+      - name: upload retail artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Routes-Import-Export_BCC_v${{ steps.version.outputs.version }}.zip
+          asset_name: Routes-Import-Export_BCC_v${{ steps.version.outputs.version }}.zip
+          asset_content_type: application/zip
+      - name: upload classic artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Routes-Import-Export_classic_v${{ steps.version.outputs.version }}.zip
+          asset_name: Routes-Import-Export_classic_v${{ steps.version.outputs.version }}.zip
+          asset_content_type: application/zip
