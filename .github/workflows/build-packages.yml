@@ -18,21 +18,23 @@ jobs:
           echo "::set-output name=bcc::$(cat RoutesImportExport/env/interface_bcc)"
           echo "::set-output name=classic::$(cat RoutesImportExport/env/interface_classic)"
       - name: Update version
-        run: sed -i 's/1.0.5/${{ steps.version.outputs.version }}/g' RoutesImportExport/RoutesImportExport.toc
+        run: sed -i 's/Version${{ ':' }} v[0-9.]*/Version${{ ':' }} v${{ steps.version.outputs.version }}/g' RoutesImportExport/RoutesImportExport.toc
+      - name: Set interface number Ratail
+        run: sed -i 's/Interface${{ ':' }} [0-9]*/Interface${{ ':' }} ${{ steps.interface.outputs.retail }}/g' RoutesImportExport/RoutesImportExport.toc
       - name: Archive Release Retail
         uses: thedoctor0/zip-release@master
         with:
           filename: Routes-Import-Export_v${{ steps.version.outputs.version }}.zip
           exclusions: '*.git* /RoutesImportExport/env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
       - name: Set interface number TBC
-        run: sed -i 's/${{ steps.interface.outputs.retail }}/${{ steps.interface.outputs.bcc }}/g' RoutesImportExport/RoutesImportExport.toc
+        run: sed -i 's/Interface${{ ':' }} [0-9]*/Interface${{ ':' }} ${{ steps.interface.outputs.bcc }}/g' RoutesImportExport/RoutesImportExport.toc
       - name: Archive Release TBC
         uses: thedoctor0/zip-release@master
         with:
           filename: Routes-Import-Export_BCC_v${{ steps.version.outputs.version }}.zip
           exclusions: '*.git* /RoutesImportExport/env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
       - name: Set interface number Classic
-        run: sed -i 's/${{ steps.interface.outputs.bcc }}/${{ steps.interface.outputs.classic }}/g' RoutesImportExport/RoutesImportExport.toc
+        run: sed -i 's/Interface${{ ':' }} [0-9]*/Interface${{ ':' }} ${{ steps.interface.outputs.classic }}/g' RoutesImportExport/RoutesImportExport.toc
       - name: Archive Release Classic
         uses: thedoctor0/zip-release@master
         with:
