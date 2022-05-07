@@ -21,21 +21,21 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           filename: Routes-Import-Export_v${{ steps.version.outputs.version }}.zip
-          exclusions: '*.git* env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
+          exclusions: '*.git* /env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
       - name: Set interface number TBC
         run: sed -i 's/${{ steps.interface.outputs.retail }}/${{ steps.interface.outputs.bcc }}/g' RoutesImportExport.toc
       - name: Archive Release TBC
         uses: thedoctor0/zip-release@master
         with:
           filename: Routes-Import-Export_BCC_v${{ steps.version.outputs.version }}.zip
-          exclusions: '*.git* env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
+          exclusions: '*.git* /env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
       - name: Set interface number Classic
         run: sed -i 's/${{ steps.interface.outputs.bcc }}/${{ steps.interface.outputs.classic }}/g' RoutesImportExport.toc
       - name: Archive Release Classic
         uses: thedoctor0/zip-release@master
         with:
           filename: Routes-Import-Export_classic_v${{ steps.version.outputs.version }}.zip
-          exclusions: '*.git* env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
+          exclusions: '*.git* /env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
       - name: release
         uses: actions/create-release@v1
         id: create_release
