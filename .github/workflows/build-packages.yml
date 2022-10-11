@@ -16,6 +16,7 @@ jobs:
         run: |
           echo "::set-output name=retail::$(cat RoutesImportExport/env/interface_retail)"
           echo "::set-output name=bcc::$(cat RoutesImportExport/env/interface_bcc)"
+          echo "::set-output name=wolkc::$(cat RoutesImportExport/env/interface_wolkc)"
           echo "::set-output name=classic::$(cat RoutesImportExport/env/interface_classic)"
       - name: Update version
         run: sed -i 's/Version${{ ':' }} v[0-9.]*/Version${{ ':' }} v${{ steps.version.outputs.version }}/g' RoutesImportExport/RoutesImportExport.toc
@@ -32,6 +33,13 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           filename: Routes-Import-Export_BCC_v${{ steps.version.outputs.version }}.zip
+          exclusions: '*.git* /RoutesImportExport/env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
+      - name: Set interface number WOTLKC
+        run: sed -i 's/Interface${{ ':' }} [0-9]*/Interface${{ ':' }} ${{ steps.interface.outputs.wotlkc }}/g' RoutesImportExport/RoutesImportExport.toc
+      - name: Archive Release WOTLKC
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: Routes-Import-Export_WOTLKC_v${{ steps.version.outputs.version }}.zip
           exclusions: '*.git* /RoutesImportExport/env/* *.github* *.md *.zip /*node_modules/* .editorconfig'
       - name: Set interface number Classic
         run: sed -i 's/Interface${{ ':' }} [0-9]*/Interface${{ ':' }} ${{ steps.interface.outputs.classic }}/g' RoutesImportExport/RoutesImportExport.toc
@@ -60,7 +68,7 @@ jobs:
           asset_path: Routes-Import-Export_v${{ steps.version.outputs.version }}.zip
           asset_name: Routes-Import-Export_v${{ steps.version.outputs.version }}.zip
           asset_content_type: application/zip
-      - name: upload retail artifacts
+      - name: upload tbcc artifacts
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -68,6 +76,15 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: Routes-Import-Export_BCC_v${{ steps.version.outputs.version }}.zip
           asset_name: Routes-Import-Export_BCC_v${{ steps.version.outputs.version }}.zip
+          asset_content_type: application/zip
+      - name: upload wotlkc artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Routes-Import-Export_WOTLKC_v${{ steps.version.outputs.version }}.zip
+          asset_name: Routes-Import-Export_WOTLKC_v${{ steps.version.outputs.version }}.zip
           asset_content_type: application/zip
       - name: upload classic artifacts
         uses: actions/upload-release-asset@v1

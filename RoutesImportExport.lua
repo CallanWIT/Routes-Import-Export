@@ -44,15 +44,15 @@ local function stripSpecialChars(string)
 end
 
 local function getProjectName(projectId)
-    return (projectId == WOW_PROJECT_MAINLINE and "Retail") or (projectId == WOW_PROJECT_CLASSIC and "Classic") or (projectId == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and "TBCC") or "Unknown"
+    return (projectId == WOW_PROJECT_MAINLINE and "Retail") or (projectId == WOW_PROJECT_CLASSIC and "Classic") or (projectId == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and "TBCC") or (projectId == WOW_PROJECT_WRATH_CLASSIC and "WOTLKC") or "Unknown"
 end
 
 local function getProjectLongName(projectId)
-    return (projectId == WOW_PROJECT_MAINLINE and "Retail WoW") or (projectId == WOW_PROJECT_CLASSIC and "Classic WoW") or (projectId == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and "Burning Crusade Classic") or "Unknown WoW Type"
+    return (projectId == WOW_PROJECT_MAINLINE and "Retail WoW") or (projectId == WOW_PROJECT_CLASSIC and "Classic WoW") or (projectId == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and "Burning Crusade Classic") or (projectId == WOW_PROJECT_WRATH_CLASSIC and "Wrath of the Lich King Classic") or "Unknown WoW Type"
 end
 
 local function getProjectId(projectName)
-    return (projectName =="Retail" and WOW_PROJECT_MAINLINE) or (projectName == "Classic" and WOW_PROJECT_CLASSIC) or (projectName == "TBCC" and WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
+    return (projectName =="Retail" and WOW_PROJECT_MAINLINE) or (projectName == "Classic" and WOW_PROJECT_CLASSIC) or (projectName == "TBCC" and WOW_PROJECT_BURNING_CRUSADE_CLASSIC) or (projectName == "WOTLKC" and WOW_PROJECT_WRATH_CLASSIC)
 end
 
 local function serialize(data)
