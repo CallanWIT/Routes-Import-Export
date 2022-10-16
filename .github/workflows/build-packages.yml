@@ -16,7 +16,7 @@ jobs:
         run: |
           echo "::set-output name=retail::$(cat RoutesImportExport/env/interface_retail)"
           echo "::set-output name=bcc::$(cat RoutesImportExport/env/interface_bcc)"
-          echo "::set-output name=wolkc::$(cat RoutesImportExport/env/interface_wolkc)"
+          echo "::set-output name=wolkc::$(cat RoutesImportExport/env/interface_wotlkc)"
           echo "::set-output name=classic::$(cat RoutesImportExport/env/interface_classic)"
       - name: Update version
         run: sed -i 's/Version${{ ':' }} v[0-9.]*/Version${{ ':' }} v${{ steps.version.outputs.version }}/g' RoutesImportExport/RoutesImportExport.toc
