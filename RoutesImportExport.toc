@@ -1,10 +1,16 @@
-## Interface: 90200
+## Interface: 100200
 ## Title: Routes Import/Export
 ## Author: Nadiv (Callan)
-## Version: v1.0.5
+## Version: v1.0.8
 ## DefaultState: enabled
 ## Dependencies: Routes
 
 Libs\Libs.xml
 
 RoutesImportExport.lua
+
+# Plugins
+RoutesPlugins\GatherMate2.lua
+RoutesPlugins\Gatherer.lua
+RoutesPlugins\HandyNotes.lua
+RoutesPlugins\GatherLite.lua

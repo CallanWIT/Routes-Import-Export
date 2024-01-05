@@ -235,12 +235,21 @@ local importGroup = {
     order = 999,
 }
 
+local function fixPlugins()
+    Routes.InitFixedGatherMate2Plugin()
+    Routes.InitFixedGathererPlugin()
+    Routes.InitFixedGatherLitePlugin()
+    Routes.InitFixedHandyNotesPlugin()
+end
+
 local function init(self, event, name)
     if (name ~= "RoutesImportExport") then return end
 
     Routes:GetAceOptRouteTable().args.info_group.args.rename = renameGroup
     Routes:GetAceOptRouteTable().args.info_group.args.export = exportGroup
     Routes.options.args.routes_group.args.import = importGroup
+
+    fixPlugins()
 end
 
 local frame = CreateFrame("Frame")
