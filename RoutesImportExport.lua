@@ -218,6 +218,12 @@ local exportGroup = {
 
         return serialize(data)
     end,
+    set = function(info, value)
+        local result, imported = pcall(importRoute, value)
+        if not (result and imported) then
+            print("|cFFFF0808Incorrect import string")
+        end
+    end,
     order = 999,
 }
 
