@@ -1,4 +1,4 @@
-## Interface: 100207
+## Interface: 11502
 ## Title: Routes Import/Export
 ## Author: Nadiv (Callan)
 ## Version: v1.0.10
@@ -10,7 +10,7 @@ Libs\Libs.xml
 RoutesImportExport.lua
 
 # Plugins
-# RoutesPlugins\GatherMate2.lua
-# RoutesPlugins\Gatherer.lua
-# RoutesPlugins\HandyNotes.lua
-# RoutesPlugins\GatherLite.lua
+RoutesPlugins\GatherMate2.lua
+RoutesPlugins\Gatherer.lua
+RoutesPlugins\HandyNotes.lua
+RoutesPlugins\GatherLite.lua

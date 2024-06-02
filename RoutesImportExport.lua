@@ -44,15 +44,15 @@ local function stripSpecialChars(string)
 end
 
 local function getProjectName(projectId)
-    return (projectId == WOW_PROJECT_MAINLINE and "Retail") or (projectId == WOW_PROJECT_CLASSIC and "Classic") or (projectId == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and "TBCC") or (projectId == WOW_PROJECT_WRATH_CLASSIC and "WOTLKC") or "Unknown"
+    return (projectId == WOW_PROJECT_MAINLINE and "Retail") or (projectId == WOW_PROJECT_CLASSIC and "Classic") or (projectId == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and "TBCC") or (projectId == WOW_PROJECT_WRATH_CLASSIC and "WOTLKC") or (projectId == 14 and "CATA") or "Unknown"
 end
 
 local function getProjectLongName(projectId)
-    return (projectId == WOW_PROJECT_MAINLINE and "Retail WoW") or (projectId == WOW_PROJECT_CLASSIC and "Classic WoW") or (projectId == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and "Burning Crusade Classic") or (projectId == WOW_PROJECT_WRATH_CLASSIC and "Wrath of the Lich King Classic") or "Unknown WoW Type"
+    return (projectId == WOW_PROJECT_MAINLINE and "Retail WoW") or (projectId == WOW_PROJECT_CLASSIC and "Classic WoW") or (projectId == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and "Burning Crusade Classic") or (projectId == WOW_PROJECT_WRATH_CLASSIC and "Wrath of the Lich King Classic") or (projectId == 14 and "Cataclysm Classic") or "Unknown WoW Type"
 end
 
 local function getProjectId(projectName)
-    return (projectName =="Retail" and WOW_PROJECT_MAINLINE) or (projectName == "Classic" and WOW_PROJECT_CLASSIC) or (projectName == "TBCC" and WOW_PROJECT_BURNING_CRUSADE_CLASSIC) or (projectName == "WOTLKC" and WOW_PROJECT_WRATH_CLASSIC)
+    return (projectName =="Retail" and WOW_PROJECT_MAINLINE) or (projectName == "Classic" and WOW_PROJECT_CLASSIC) or (projectName == "TBCC" and WOW_PROJECT_BURNING_CRUSADE_CLASSIC) or (projectName == "WOTLKC" and WOW_PROJECT_WRATH_CLASSIC) or (projectName == "CATA" and 14)
 end
 
 local function serialize(data)
@@ -68,7 +68,8 @@ local function deserialize(exportString)
 
     if #sections == 0 then return nil end
 
-    if #sections == 5 and getProjectId(sections[1]) ~= WOW_PROJECT_ID then
+    if #sections == 5 and getProjectId(sections[1]) ~= WOW_PROJECT_ID and
+        (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE or getProjectId(sections[1]) == WOW_PROJECT_MAINLINE or WOW_PROJECT_ID < getProjectId(sections[1])) then
         print(string.format("|cFFFF0a0aThis import string is for %s not %s|r", getProjectLongName(getProjectId(sections[1])), getProjectLongName(WOW_PROJECT_ID)))
         return nil
     end
@@ -241,21 +242,12 @@ local importGroup = {
     order = 999,
 }
 
-local function fixPlugins()
-    Routes.InitFixedGatherMate2Plugin()
-    Routes.InitFixedGathererPlugin()
-    Routes.InitFixedGatherLitePlugin()
-    Routes.InitFixedHandyNotesPlugin()
-end
-
 local function init(self, event, name)
     if (name ~= "RoutesImportExport") then return end
 
     Routes:GetAceOptRouteTable().args.info_group.args.rename = renameGroup
     Routes:GetAceOptRouteTable().args.info_group.args.export = exportGroup
     Routes.options.args.routes_group.args.import = importGroup
-
-    fixPlugins()
 end
 
 local frame = CreateFrame("Frame")
